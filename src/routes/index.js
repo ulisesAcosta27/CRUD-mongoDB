@@ -9,21 +9,21 @@ const {
   deletePerson,
 } = require('../controllers/index')
 const { validarCampos } = require('../middleware/validarCampos')
-const { idExiste, personaExiste } = require('../middleware/db-validator')
+const { idExiste } = require('../middleware/db-validator')
 
 router.get('/', getAllUser)
 
-router.get('/:id', getOneUser)
+router.get('/:password', getOneUser)
 
 router.post('/', [
   check('nombre', 'Tu nombre debe tener como minimo 4 caracteres').isLength({ min: 3 }),
-  check('id').custom(idExiste),
+  check('email').custom(idExiste),
   validarCampos
-],newPerson)
+], newPerson)
 
-router.put('/:id', updatePerson)
+router.put('/:password', updatePerson)
 
-router.delete('/:id', deletePerson)
+router.delete('/:password', deletePerson)
 
 module.exports = router
 

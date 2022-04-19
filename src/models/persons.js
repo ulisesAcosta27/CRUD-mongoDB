@@ -3,7 +3,8 @@ const { Schema, model } = require('mongoose')
 const personaSchema = new Schema({
   nombre: String,
   apellido: String,
-  id: Number
+  email: String,
+  password: String,
 })
 
 const Persona = model('Persona', personaSchema)

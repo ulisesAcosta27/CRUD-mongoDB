@@ -14,8 +14,11 @@ const getAllUser = async (req, res) => {
 
 const getOneUser = async (req, res) => {
   try {
-    const { id } = req.params;
-    const getOnePerson = await Persona.find({ id: id })
+    const { password } = req.params;
+    const getOnePerson = await Persona.findOne({ password: password })
+    if(getOnePerson == null){
+      return res.status(400).json({error: 'Usuario no encontrado'})
+    }
     res.status(200).json(getOnePerson)
   } catch (error) {
     res.status(404).json({
@@ -25,11 +28,12 @@ const getOneUser = async (req, res) => {
 }
 
 const newPerson = async (req, res) => {
-  const { nombre, apellido, id, contraseña } = req.body
-  const pito = saltRounds = 10
-  bcrypt.hashSync(contraseña, saltRounds);
+  const { nombre, apellido, email, password } = req.body
   try {
-    const newPerson = await new Persona({ nombre, apellido, id, pito })
+    if([nombre, apellido, email, password].includes('')){
+      return res.status(400).json({error: 'Por favor ingrese todos los campos'})
+    }
+    const newPerson = await new Persona({ nombre, apellido, email, password })
     await newPerson.save()
     res.status(200).json(newPerson)
   } catch (error) {
@@ -38,15 +42,15 @@ const newPerson = async (req, res) => {
 }
 
 const updatePerson = async (req, res) => {
-  const { id } = req.params
+  const { password } = req.params
   const { nombre } = req.body
   try {
-    const existeId = await Persona.find({ id })
-    if (!existeId) {
+    const existepassword = await Persona.find({ password })
+    if (existepassword == null) {
       return res.status(400).json({ error: 'usuario no existente' })
     }
     const updatePerson = await Persona.updateOne(
-      { id: id },
+      { password },
       { $set: { nombre: nombre } })
     res.status(200).json(updatePerson)
   } catch (error) {
@@ -54,9 +58,13 @@ const updatePerson = async (req, res) => {
   }
 }
 const deletePerson = async (req, res) => {
-  const { id } = req.params
+  const { password } = req.params
   try {
-    const deletePerson = await Persona.findOneAndDelete({ id: id })
+    const getOnePerson = await Persona.findOne({ password })
+    if(getOnePerson == null){
+      return res.status(400).json({error: 'Usuario no encontrado'})
+    }
+    const deletePerson = await Persona.deleteOne({ password })
     res.status(200).json({ msg: "Persona eliminada exitosamente", deletePerson })
   } catch (error) {
     return res.status(400).json(error)
