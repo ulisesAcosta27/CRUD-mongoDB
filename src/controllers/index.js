@@ -41,6 +41,16 @@ const newPerson = async (req, res) => {
   }
 }
 
+const IniciarPerson = (req, res) =>{
+  const { email, password } = req.body
+  try {
+    console.log({email, password})
+    res.status(200).json({msg: 'Sing in'})
+  } catch (error) {
+    res.status(200).json({msg: error})
+  }
+}
+
 const updatePerson = async (req, res) => {
   const { password } = req.params
   const { nombre } = req.body
@@ -78,4 +88,5 @@ module.exports = {
   newPerson,
   updatePerson,
   deletePerson,
+  IniciarPerson,
 }
